@@ -7,6 +7,7 @@
   <p id="date"></p>
   <p id="location"></p>
   <p id="comment"></p>
+  <button id="nextComment">Next</button>
 </div>
 
 <script>
@@ -17,25 +18,36 @@ d3.csv("UFO_2003.csv", function(data) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  var comment = String(data[getCommentNo()].comments).trim();
+  function refreshComment(){
+    var comment = String(data[getCommentNo()].comments).trim();
 
-  // Ensures that selected comment does not have any charrefs/special
-  // characters that would look weird on the page.
-  while(comment.includes("&")){
-    comment = String(data[getCommentNo()].comments).trim();
+    // Ensures that selected comment does not have any charrefs/special
+    // characters that would look weird on the page.
+    while(comment.includes("&")){
+      comment = String(data[getCommentNo()].comments).trim();
+    }
+
+    var city = titleCase(String(data[getCommentNo()].city).trim());
+    var state = String(data[getCommentNo()].state).trim().toUpperCase();
+    var location = city + ", " + state;
+    d3.select("#location").append("text")
+    .text('Location: ' + location);
+
+    var dateFull = String(data[getCommentNo()].datetime).split(" ");
+    var dateTrunc = dateFull[0];
+    d3.select("#date").append("text")
+    .text('Date: ' + dateTrunc);
+
+    d3.select("#comment").append("text")
+    .text('Comment: "' + comment + '"');
   }
 
-  var city = titleCase(String(data[getCommentNo()].city).trim());
-  var state = String(data[getCommentNo()].state).trim().toUpperCase();
-  var location = city + ", " + state;
-  d3.select("#location").append("text")
-  .text('Location: ' + location);
+  refreshComment();
 
-  d3.select("#comment").append("text")
-  .text('Comment: "' + comment + '"');
-  console.log(data[getCommentNo()].comments);
-  console.log(getCommentNo());
-  console.log(data);
+  d3.select("#nextComment").on("click", function () {
+    d3.select("#reports").selectAll("p").text("");
+    refreshComment();
+  })
 
   // TitleCase function from http://stackoverflow.com/questions/32589197/capitalize-first-letter-of-each-word-in-a-string-javascript
   function titleCase(str) {
