@@ -1,0 +1,341 @@
+<html>
+<head>
+<title> Project 2 </title>
+<link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel\
+="stylesheet">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+</head>
+<style>
+h2 { font-family: 'Alegreya Sans', Calibri, sans-serif; }
+
+h5 { font-family: 'Alegreya Sans', Calibri, sans-serif; }
+
+</style>
+<body>
+<h2> No Association Between UFO Sightings and Alcohol Prevalence </h3>
+
+<h5>The solar map shows pink alcohol variables each year orbiting a yellow UFO variable at the center. Pearson's coefficient is displayed by the radius. Unfortunately, there was no linear association ( > 0.5) between UFO sightings and drinking alcohol in any year between 2002 and 2012. </h5>
+
+<p id = "part1">
+<svg height = "500" width = "500">
+<script id = "correlationMap">
+var svg = d3.select("svg");
+var originX = 250;
+var originY = 250;
+
+svg.append("circle")
+.attr("r", 10)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#e6b384");
+
+svg.append("circle")
+.attr("r", 30)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 50)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 70)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 90)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 110)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#e6b384")
+.attr("fill-opacity", "0.1")
+.attr("stroke", "#e6b384")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 130)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 150)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+svg.append("circle")
+.attr("r", 170)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+//0.1 coefficient circle
+svg.append("circle")
+.attr("r", 190)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#E8E8E8")
+.attr("stroke-width", "1");
+
+//0 coefficient circle
+svg.append("circle")
+.attr("r", 210)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "none")
+.attr("stroke", "#3a1f2e")
+.attr("stroke-width", "1");
+
+//draw points around 0.1 coefficient circle
+var data2002X = originX + ((190) * Math.sin(-150 * Math.PI/ 180));
+var data2002Y = originY - ((190) * Math.cos(-150 * Math.PI/ 180));
+var data2003X = originX + ((190) * Math.sin(-180 * Math.PI/ 180));
+var data2003Y = originY - ((190) * Math.cos(-180 * Math.PI/ 180));
+var data2004X = originX + ((190) * Math.sin(-210 * Math.PI/ 180));
+var data2004Y = originY - ((190) * Math.cos(-210 * Math.PI/ 180));
+var data2005X = originX + ((190) * Math.sin(-240 * Math.PI/ 180));
+var data2005Y = originY - ((190) * Math.cos(-240 * Math.PI/ 180));
+var data2006X = originX + ((190) * Math.sin(-270 * Math.PI/ 180));
+var data2006Y = originY - ((190) * Math.cos(-270 * Math.PI/ 180));
+var data2007X = originX + ((190) * Math.sin(-300 * Math.PI/ 180));
+var data2007Y = originY - ((190) * Math.cos(-300 * Math.PI/ 180));
+
+var data2010X = originX + ((190) * Math.sin(-390 * Math.PI/ 180));
+var data2010Y = originY - ((190) * Math.cos(-390 * Math.PI/ 180));
+var data2011X = originX + ((190) * Math.sin(-420 * Math.PI/ 180));
+var data2011Y = originY - ((190) * Math.cos(-420 * Math.PI/ 180));
+var data2012X = originX + ((190) * Math.sin(-450 * Math.PI/ 180));
+var data2012Y = originY - ((190) * Math.cos(-450 * Math.PI/ 180));
+
+//draw points around 0 coefficient circle
+
+var data2008X = originX + ((210) * Math.sin(-330 * Math.PI/ 180));
+var data2008Y = originY - ((210) * Math.cos(-330 * Math.PI/ 180));
+var data2009X = originX + ((210) * Math.sin(-360 * Math.PI/ 180));
+var data2009Y = originY - ((210) * Math.cos(-360 * Math.PI/ 180));
+
+
+var dataPoint2002 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(3000)
+.attr('cy', data2002X)
+.attr('cx', data2002Y);
+
+var dataPoint2003 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(3500)
+.attr('cy', data2003X)
+.attr('cx', data2003Y);
+
+var dataPoint2004 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(4000)
+.attr('cy', data2004X)
+.attr('cx', data2004Y);
+
+var dataPoint2005 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(4500)
+.attr('cy', data2005X)
+.attr('cx', data2005Y);
+
+var dataPoint2006 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(5000)
+.attr('cy', data2006X)
+.attr('cx', data2006Y);
+
+
+var dataPoint2007 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(5500)
+.attr('cy', data2007X)
+.attr('cx', data2007Y);
+
+var dataPoint2008 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(6000)
+.attr('cy', data2008X)
+.attr('cx', data2008Y);
+
+var dataPoint2009 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(6500)
+.attr('cy', data2009X)
+.attr('cx', data2009Y);
+
+var dataPoint2010 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(7000)
+.attr('cy', data2010X)
+.attr('cx', data2010Y);
+
+var dataPoint2011 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(7500)
+.attr('cy', data2011X)
+.attr('cx', data2011Y);
+
+var dataPoint2012 = svg.append("circle")
+.attr("r", 5)
+.attr("cx", originX)
+.attr("cy", originY)
+.attr("fill", "#dc7776")
+.transition()
+.duration(8000)
+.attr('cy', data2012X)
+.attr('cx', data2012Y);
+
+
+// Axis labels
+svg.append("text")
+.attr("x", 30)
+.attr("y", originY - 10)
+.attr("font-size", "15px")
+.text("0.0")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr("x", 140)
+.attr("y", originY - 10)
+.attr("font-size", "15px")
+.text("0.5")
+.attr("fill", "#3a1f2e");
+
+
+svg.append("text")
+.attr("x", 240)
+.attr("y", originY - 10)
+.attr("font-size", "15px")
+.text("1.0")
+.attr("fill", "#3a1f2e");
+
+
+svg.append("text")
+.attr("x", 340)
+.attr("y", originY - 10)
+.attr("font-size", "15px")
+.text("0.5")
+.attr("fill", "#3a1f2e");
+
+
+svg.append("text")
+.attr("x", 440)
+.attr("y", originY - 10)
+.attr("font-size", "15px")
+.text("0.0")
+.attr("fill", "#3a1f2e");
+
+//draw time labels
+svg.append("text")
+.attr('y', data2002X - 10)
+.attr('x', data2002Y + 30)
+.attr("font-size", "20px")
+.text("2002")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr('y', data2004X + 10)
+.attr('x', data2004Y + 30)
+.attr("font-size", "20px")
+.text("2004")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr('y', data2006X + 40)
+.attr('x', data2006Y - 20)
+.attr("font-size", "20px")
+.text("2006")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr('y', data2008X + 10)
+.attr('x', data2008Y - 60)
+.attr("font-size", "20px")
+.text("2008")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr('y', data2010X -10)
+.attr('x', data2010Y - 70)
+.attr("font-size", "20px")
+.text("2010")
+.attr("fill", "#3a1f2e");
+
+svg.append("text")
+.attr('y', data2012X - 30)
+.attr('x', data2012Y - 20)
+.attr("font-size", "20px")
+.text("2012")
+.attr("fill", "#3a1f2e");
+
+</script>
+</body>
+</html>
