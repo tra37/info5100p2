@@ -23,9 +23,9 @@
 	
 	.polygons {
 		fill: none;
-		stroke: black;
+		stroke: #273142;
 		stroke-width: 0.5px;
-		stroke-opacity: 0.4;
+		stroke-opacity: 0.45;
 	}
 </style>
 
@@ -37,7 +37,7 @@
 		// instantiate map object to div #map
 		var map = new L.map("map", {
 			minZoom: 4,
-			maxZoom: 6,
+			maxZoom: 9,
 			center: [37.8,-96.9],
 			zoom: 4
 		});
@@ -74,7 +74,7 @@
 				opacity: 0.4,
 				color: 'grey',
 				dashArray: '1',
-				fillOpacity: 0.2
+				fillOpacity: 0.3
 			};
 		}
     
@@ -109,11 +109,11 @@
 			.data(data).enter()
 			.append("circle")
 			.attr("class", "AEDpoint")
-			.style("opacity", 0.5)
-			.style("fill", "steelblue")
+			.style("opacity", 0.8)
+			.style("fill", "#09875f")
 			//.attr("r", 150)
 			//.transition().duration(1200)
-			.attr("r", 3);
+			.attr("r", 5);
 			
 			feature.attr("transform", 
 			function(d) { 
