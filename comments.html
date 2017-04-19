@@ -1,0 +1,54 @@
+<html>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<div id="reports">
+  <h2>Select UFO Sighting</h2>
+  <p id="date"></p>
+  <p id="location"></p>
+  <p id="comment"></p>
+</div>
+
+<script>
+d3.csv("UFO_2003.csv", function(data) {
+  function getCommentNo(){
+    var min = 0;
+    var max = data.length;
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  var comment = String(data[getCommentNo()].comments).trim();
+
+  // Ensures that selected comment does not have any charrefs/special
+  // characters that would look weird on the page.
+  while(comment.includes("&")){
+    comment = String(data[getCommentNo()].comments).trim();
+  }
+
+  var city = titleCase(String(data[getCommentNo()].city).trim());
+  var state = String(data[getCommentNo()].state).trim().toUpperCase();
+  var location = city + ", " + state;
+  d3.select("#location").append("text")
+  .text('Location: ' + location);
+
+  d3.select("#comment").append("text")
+  .text('Comment: "' + comment + '"');
+  console.log(data[getCommentNo()].comments);
+  console.log(getCommentNo());
+  console.log(data);
+
+  // TitleCase function from http://stackoverflow.com/questions/32589197/capitalize-first-letter-of-each-word-in-a-string-javascript
+  function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+       // You do not need to check if i is larger than splitStr length, as your for does that for you
+       // Assign it back to the array
+       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+   }
+   // Directly return the joined string
+   return splitStr.join(' ');
+}
+});
+</script>
+
+</html>
