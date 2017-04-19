@@ -1,0 +1,40 @@
+<html>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  display: inline;
+  padding: 10px;
+  background-color: #5ee;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+}
+
+#year2012 { border-right: 1px solid black;}
+</style>
+
+<nav></nav>
+
+<script>
+  var list = "<ul>";
+  for (var i = 2002; i < 2013; i++){
+    list += "<li onclick='clickNav()' id='year" + i + "'>" + i + "</li>";
+  }
+  list += "</ul>";
+
+  $("nav").append(list);
+
+  function clickNav() {
+  }
+  var liElements = d3.selectAll("li");
+  liElements.on("click", function() {
+    console.log(d3.mouse(this));
+  })
+</script>
+</html>
