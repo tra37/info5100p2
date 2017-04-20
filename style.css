@@ -26,18 +26,6 @@ path {
 }
 
 div.tooltip {
-    /*position: absolute;
-    text-align: left;
-    width: 100px;
-    height: 40px;
-    padding: 2px;
-    font: 12px monospace;
-    background: black;
-    color: white;
-    border: 0px;
-    border-radius: 2px;
-    pointer-events: none;*/
-
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -63,4 +51,10 @@ div.tooltip {
     -webkit-font-smoothing: antialiased;
     background-position: 3px 50%;
     background-repeat: no-repeat no-repeat;
+}
+
+.AEDpoint {
+  r: 6px;
+  fill: #09875f;
+  opacity: 0.8;
 }
