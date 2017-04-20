@@ -8,139 +8,221 @@
 <script type="text/javascript" src="us-states.js"></script>
 
 <style>
-    #map{
-        position: absolute;
-		top: 0;
-		bottom: 0;
-		width: 100%;
-/*		width: 1430px;
-        height: 800px;*/
-    }
-	
+  body {
+    margin:0;
+    padding:0;
+  }
+
+  #map {
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:100%;
+  }
+
 	path {
 		stroke-linejoin: round;
 	}
-	
+
 	.polygons {
 		fill: none;
 		stroke: #273142;
 		stroke-width: 0.5px;
 		stroke-opacity: 0.45;
 	}
+
+  div.tooltip {
+      /*position: absolute;
+      text-align: left;
+      width: 100px;
+      height: 40px;
+      padding: 2px;
+      font: 12px monospace;
+      background: black;
+      color: white;
+      border: 0px;
+      border-radius: 2px;
+      pointer-events: none;*/
+
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
+      border-bottom-left-radius: 2px;
+      text-indent: 20px;
+      width: auto;
+      padding: 0px 4px 0px 0px;
+      text-align: center;
+      font-style: thin;
+      font-variant-caps: normal;
+      font-weight: bold;
+      font-size: 11px;
+      line-height: 20px;
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
+      color: rgb(255, 255, 255);
+      background-size: 14px 14px;
+      background-color: black;
+      position: absolute;
+      opacity: 1;
+      z-index: 8675309;
+      cursor: pointer;
+      border: none;
+      -webkit-font-smoothing: antialiased;
+      background-position: 3px 50%;
+      background-repeat: no-repeat no-repeat;
+  }
 </style>
 
 <body>
 <div id="map"></div>
 <script>
 
-	d3.csv("UFO_2003.csv", function(data) {
-		// instantiate map object to div #map
-		var map = new L.map("map", {
-			minZoom: 4,
-			maxZoom: 9,
-			center: [37.8,-96.9],
-			zoom: 4
-		});
-		
-		map.on("viewreset moveend", update);
-		
-		// link to openstreetmap
-		var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-    
-		// add attribution to map
-		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; ' + mapLink + ' Contributors',
-		}).addTo(map);
-    
-		// link to geojson data for choropleth layer
-		L.geoJson(statesData, {style: style}).addTo(map);
-    
-		// quantize levels of alcohol consumption into a diverging sequence of colors
-		function getColor(d) {
-			return d > 70  ? '#BD0026' :
-				   d > 60  ? '#E31A1C' :
-				   d > 50  ? '#FC4E2A' :
-				   d > 40   ? '#FD8D3C' :
-				   d > 30   ? '#FEB24C' :
-				   d > 20   ? '#FED976' :
-							  '#FFEDA0'; //20 is the lightest color
-		}
-    
-		//TODO: currently style reflects population density not alcohol level
-		function style(feature) {
-			return {
-				fillColor: getColor(feature.properties.density),
-				weight: 1,
-				opacity: 0.4,
-				color: 'grey',
-				dashArray: '1',
-				fillOpacity: 0.3
-			};
-		}
-    
-		/* We simply pick up the SVG from the map object */
-		map._initPathRoot();
-		var svg = d3.select("#map").select("svg"),
-		g = svg.append("g").attr('class', 'leaflet-zoom-hide');
-		
-		/* Initialize voronoi generator */
-		var voronoi = d3.voronoi()
-		.x(function(d) { return d.x; })
-		.y(function(d) { return d.y; });
-			
-		update();
-		
-		function update() {
-			var positions = [];
-		
-			/* Add a LatLng object to each item in the dataset */
-			data.forEach(function(d) {
-				d.LatLng = new L.LatLng(Number(d.latitude), Number(d["longitude "]));
-				positions.push({
-					x: map.latLngToLayerPoint(d.LatLng).x,
-					y: map.latLngToLayerPoint(d.LatLng).y
-				});
+var file, positions;
+
+// set up div for tooltip
+var div = d3.select("body").append("div")
+.attr("class", "tooltip")
+.style("opacity", 0);
+
+//event handler in response to button selection
+file = "UFO_2003.csv";
+
+d3.csv(file, function(data) {
+
+  //instantiate map object to div #map
+	var map = new L.map("map", {
+		minZoom: 4,
+		maxZoom: 9,
+		center: [37.8,-96.9],
+		zoom: 4
+	});
+
+	map.on("viewreset moveend", update);
+
+	// link to openstreetmap
+	var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
+	// add attribution to map
+	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; ' + mapLink + ' Contributors',
+	}).addTo(map);
+
+	// //link to geojson data for choropleth layer
+	// L.geoJson(statesData, {style: style}).addTo(map);
+  //
+	// // quantize levels of alcohol consumption into a diverging sequence of colors
+	// function getColor(d) {
+	// 	return d > 70  ? '#BD0026' :
+	// 		   d > 60  ? '#E31A1C' :
+	// 		   d > 50  ? '#FC4E2A' :
+	// 		   d > 40   ? '#FD8D3C' :
+	// 		   d > 30   ? '#FEB24C' :
+	// 		   d > 20   ? '#FED976' :
+	// 					  '#FFEDA0'; //20 is the lightest color
+	// }
+  //
+	//
+	// function style(feature) {
+	// 	return {
+	// 		fillColor: getColor(feature.properties.density),
+	// 		weight: 1,
+	// 		opacity: 0.4,
+	// 		color: 'grey',
+	// 		dashArray: '1',
+	// 		fillOpacity: 0.3
+	// 	};
+	// }
+
+	/* We simply pick up the SVG from the map object */
+	map._initPathRoot();
+	var svg = d3.select("#map").select("svg"),
+	g = svg.append("g").attr('class', 'leaflet-zoom-hide');
+
+	/* Initialize voronoi generator */
+	var voronoi = d3.voronoi()
+	.x(function(d) { return d.x; })
+	.y(function(d) { return d.y; });
+
+  /* update map whenever zoom/pan */
+	update();
+
+	function update() {
+		positions = [];
+
+		/* Add a LatLng object to each item in the dataset */
+		data.forEach(function(d) {
+			d.LatLng = new L.LatLng(Number(d.latitude), Number(d["longitude "]));
+      d.city = String(d.city.charAt(0).toUpperCase() + d.city.slice(1));
+      d.state = String(d.state.toUpperCase());
+      d.shape = String(d.shape);
+
+			positions.push({
+				x: map.latLngToLayerPoint(d.LatLng).x,
+				y: map.latLngToLayerPoint(d.LatLng).y
 			});
-			
-			// remove points first
-			d3.selectAll(".AEDpoint").remove();
-			
-			var feature = g.selectAll("circle")
-			.data(data).enter()
-			.append("circle")
-			.attr("class", "AEDpoint")
-			.style("opacity", 0.8)
-			.style("fill", "#09875f")
-			//.attr("r", 150)
-			//.transition().duration(1200)
-			.attr("r", 5);
-			
-			feature.attr("transform", 
-			function(d) { 
-				return "translate("+ 
-					map.latLngToLayerPoint(d.LatLng).x +","+ 
-					map.latLngToLayerPoint(d.LatLng).y +")";
-				}
-			);
-			
-			//polygons
-			var polygons = voronoi(positions).polygons();
-			
-			
-			svg.selectAll(".polygons").remove();
-			
-			svg.append("g")
-			.attr("class", "polygons")
-			.selectAll("path")
-			.data(polygons).enter()
-			.append("path")
-			.call(redrawPolygon);
-			
-			function redrawPolygon(polygon) {
-				polygon.attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
-			}
+
+		});
+
+		// remove points first
+		d3.selectAll(".AEDpoint").remove();
+
+		var feature = g.selectAll("circle")
+		.data(data).enter()
+		.append("circle")
+		.attr("class", "AEDpoint")
+		.style("opacity", 0.8)
+		.style("fill", "#09875f")
+    // .style("stroke", "black")
+		.attr("r", 7);
+
+    // add tooltips
+    feature.on("mouseover", function(d){
+      div.transition().duration(200)
+      .style("opacity", 0.9);
+
+      div.html(d.city + ", " + d.state + "<br/>" + d.shape + "-shaped object")
+      .style("left", (d3.event.pageX) + "px")
+      .style("top", (d3.event.pageY) + "px");
+
+      // accentuate mouseover-ed circle
+      d3.select(this).style("stroke-width", "2px")
+      .style("fill", "darkblue");
+    })
+    .on("mouseout", function() {
+      div.transition().duration(1200)
+      .style("opacity", 0);
+
+      // remove dark highlights
+      d3.select(this).style("stroke-width", "0.5px")
+      .style("fill", "#09875f");
+    });
+
+		feature.attr("transform",
+  		function(d) {
+  			return "translate("+
+  				map.latLngToLayerPoint(d.LatLng).x +","+
+  				map.latLngToLayerPoint(d.LatLng).y +")";
+  			}
+		);
+
+		//polygons
+		var polygons = voronoi(positions).polygons();
+
+		svg.selectAll(".polygons").remove();
+
+		svg.append("g")
+		.attr("class", "polygons")
+		.selectAll("path")
+		.data(polygons).enter()
+		.append("path")
+		.call(redrawPolygon);
+
+		function redrawPolygon(polygon) {
+			polygon.attr("d", function(d) {
+        return d ? "M" + d.join("L") + "Z" : null;
+      });
 		}
-	});	
+	}
+});
 </script>
 </body>
 </html>
