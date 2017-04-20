@@ -11,12 +11,14 @@
 
 	<!-- Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
-
+	<link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel\
+	="stylesheet">
 </head>
 
 <body>
 	<div class="span">
 		<h1><b>UFO Sightings and Alcohol Prevalence in the U.S.</b></h1>
+		<p id="yearText">Selected Year: 2002</p>
 		<button class="navButton" id="year2002">2002</button>
 		<button class="navButton" id="year2003">2003</button>
 		<button class="navButton" id="year2004">2004</button>
@@ -124,7 +126,7 @@
 								.attr("class", "point")
 								.style("opacity", 0.75)
 								.style("fill", "#09875f")
-								.attr("r", 6);
+								.attr("r", 4);
 
 								feature.attr("transform",
 								function(d) {
@@ -204,13 +206,141 @@
 			</script>
 		</div>
 
-		<!-- Selected Report Code -->
-		<div id="reports">
-		  <h2>Randomly Generated Description of UFO</h2>
-		  <p id="date"></p>
-		  <p id="location"></p>
-		  <p id="comment"></p>
-		  <button id="nextComment">Next Comment</button>
+		<div id="bottom">
+			<div id="key">
+				<svg height = "200" width = "400">
+				<script id = "mapKey">
+
+				var svg = d3.select("svg");
+
+				svg.append("text")
+				.attr("x", 15)
+				.attr("y", 20)
+				.attr("font-size", "15 px")
+				.text("% Pop. Drinking Any Alcohol")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 40)
+				.attr("fill", "#BD0026")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 45)
+				.attr("font-size", "10 px")
+				.text("> 70% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 60)
+				.attr("fill", "#E31A1C")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 65)
+				.attr("font-size", "10 px")
+				.text("> 60% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 80)
+				.attr("fill", "#FC4E2A")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 85)
+				.attr("font-size", "10 px")
+				.text("> 50% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 100)
+				.attr("fill", "#FD8D3C")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 105)
+				.attr("font-size", "10 px")
+				.text("> 40% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 120)
+				.attr("fill", "#FEB24C")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 125)
+				.attr("font-size", "10 px")
+				.text("> 30% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 20)
+				.attr("cy", 140)
+				.attr("fill", "#FED976")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+				.attr("opacity", 0.4);
+
+				svg.append("text")
+				.attr("x", 40)
+				.attr("y", 145)
+				.attr("font-size", "10 px")
+				.text("> 20% ")
+				.attr("fill", "#3a1f2e");
+
+				svg.append("circle")
+				.attr("r", 5)
+				.attr("cx", 200)
+				.attr("cy", 90)
+				.attr("fill", "#f04f43")
+				.attr("stroke", "#E8E8E8")
+				.attr("stroke-width", "1")
+
+				svg.append("text")
+				.attr("x", 210)
+				.attr("y", 95)
+				.attr("font-size", "10 px")
+				.text("1 UFO Sighting")
+				.attr("fill", "#3a1f2e");
+				</script>
+			</div>
+
+			<!-- Selected Report Code -->
+			<div id="reports">
+			  <h2>Random UFO Sighting Comments</h2>
+			  <p id="date"></p>
+			  <p id="location"></p>
+			  <p id="comment"></p>
+			  <button id="nextComment">Next Sighting</button>
+			</div>
 		</div>
 
 		<script>
@@ -227,8 +357,6 @@
 		   // Directly return the joined string
 		   return splitStr.join(' ');
 		}
-
-
 		</script>
 
 		<!-- Change year/navbar code -->
@@ -242,8 +370,10 @@
 			csv = "UFO_" + year + ".csv";
 			d3.selectAll(".point").remove();
 			loadMap();
+
 			// Refreshes comments to new random based on correct year
 			d3.select("#reports").selectAll("p").text("");
+			d3.select("#yearText").text("Selected Year: " + year);
 		})
 
 		</script>
