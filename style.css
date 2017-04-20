@@ -4,6 +4,10 @@
   min-width: 750px;
 }
 
+h1, h2 {
+  font-family: 'Cutive Mono', monospace;
+}
+
 path {
   stroke-linejoin: round;
 }
