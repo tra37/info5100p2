@@ -1,0 +1,227 @@
+<html>
+<head>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
+
+	<script type="text/javascript" src="us-states.js"></script>
+</head>
+
+<body>
+	<div class="span">
+		<h1>Title</h1>
+		<button class="navButton" id="year2002">2002</button>
+		<button class="navButton" id="year2003">2003</button>
+		<button class="navButton" id="year2004">2004</button>
+		<button class="navButton" id="year2005">2005</button>
+		<button class="navButton" id="year2006">2006</button>
+		<button class="navButton" id="year2007">2007</button>
+		<button class="navButton" id="year2008">2008</button>
+		<button class="navButton" id="year2009">2009</button>
+		<button class="navButton" id="year2010">2010</button>
+		<button class="navButton" id="year2011">2011</button>
+		<button class="navButton" id="year2012">2012</button>
+
+		<!--- Map Code -->
+		<div id="map">
+			<script>
+				// instantiate map object to div #map
+				var map = new L.map("map", {
+					minZoom: 4,
+					maxZoom: 7,
+					center: [37.8,-96.9],
+					zoom: 4
+				});
+
+				// link to openstreetmap
+				var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
+				// add attribution to map
+				L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+						attribution: '&copy; ' + mapLink + ' Contributors',
+				}).addTo(map);
+
+				function loadMap() {
+					d3.csv(csv, function(data) {
+						console.log(csv);
+
+						// link to geojson data for choropleth layer
+						L.geoJson(statesData, {style: style}).addTo(map);
+
+						map.on("viewreset moveend", update);
+
+						// quantize levels of alcohol consumption into a diverging sequence of colors
+						function getColor(d) {
+							return d > 70  ? '#BD0026' :
+								   d > 60  ? '#E31A1C' :
+								   d > 50  ? '#FC4E2A' :
+								   d > 40   ? '#FD8D3C' :
+								   d > 30   ? '#FEB24C' :
+								   d > 20   ? '#FED976' :
+											  '#FFEDA0'; //20 is the lightest color
+						}
+
+						//TODO: currently style reflects population density not alcohol level
+						function style(feature) {
+							return {
+								fillColor: getColor(feature.properties.density),
+								weight: 1,
+								opacity: 0.4,
+								color: 'grey',
+								dashArray: '1',
+								fillOpacity: 0.3
+							};
+						}
+
+						/* We simply pick up the SVG from the map object */
+						map._initPathRoot();
+						var svg = d3.select("#map").select("svg"),
+						g = svg.append("g").attr('class', 'leaflet-zoom-hide');
+
+						// /* Initialize voronoi generator */
+						// var voronoi = d3.voronoi()
+						// .x(function(d) { return d.x; })
+						// .y(function(d) { return d.y; });
+
+						update();
+
+						function update() {
+							var positions = [];
+
+							/* Add a LatLng object to each item in the dataset */
+							data.forEach(function(d) {
+								d.LatLng = new L.LatLng(Number(d.latitude), Number(d["longitude "]));
+								positions.push({
+									x: map.latLngToLayerPoint(d.LatLng).x,
+									y: map.latLngToLayerPoint(d.LatLng).y
+								});
+							});
+
+							// remove points first
+							d3.selectAll(".AEDpoint").remove();
+
+							var feature = g.selectAll("circle")
+							.data(data).enter()
+							.append("circle")
+							.attr("class", "AEDpoint")
+							.style("opacity", 0.8)
+							.style("fill", "#09875f")
+							//.attr("r", 150)
+							//.transition().duration(1200)
+							.attr("r", 5);
+
+							feature.attr("transform",
+							function(d) {
+								return "translate("+
+									map.latLngToLayerPoint(d.LatLng).x +","+
+									map.latLngToLayerPoint(d.LatLng).y +")";
+								}
+							);
+
+							// //polygons
+							// var polygons = voronoi(positions).polygons();
+							//
+							//
+							// svg.selectAll(".polygons").remove();
+							//
+							// svg.append("g")
+							// .attr("class", "polygons")
+							// .selectAll("path")
+							// .data(polygons).enter()
+							// .append("path")
+							// .call(redrawPolygon);
+							//
+							// function redrawPolygon(polygon) {
+							// 	polygon.attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
+							// }
+						}
+						function getCommentNo(){
+							var min = 0;
+							var max = data.length;
+							return Math.floor(Math.random() * (max - min + 1) + min);
+						}
+
+						function refreshComment(){
+							var comment = String(data[getCommentNo()].comments).trim();
+
+							// Ensures that selected comment does not have any charrefs/special
+							// characters that would look weird on the page.
+							while(comment.includes("&")){
+								comment = String(data[getCommentNo()].comments).trim();
+							}
+
+							var city = titleCase(String(data[getCommentNo()].city).trim());
+							var state = String(data[getCommentNo()].state).trim().toUpperCase();
+							var location = city + ", " + state;
+							d3.select("#location").append("text")
+							.text('Location: ' + location);
+
+							var dateFull = String(data[getCommentNo()].datetime).split(" ");
+							var dateTrunc = dateFull[0];
+							d3.select("#date").append("text")
+							.text('Date: ' + dateTrunc);
+
+							d3.select("#comment").append("text")
+							.text('Comment: "' + comment + '"');
+						}
+
+						refreshComment();
+
+						d3.select("#nextComment").on("click", function () {
+							d3.select("#reports").selectAll("p").text("");
+							refreshComment();
+						})
+
+					});
+				}
+			</script>
+		</div>
+
+		<!-- Selected Report Code -->
+		<div id="reports">
+		  <h2>Select UFO Sighting</h2>
+		  <p id="date"></p>
+		  <p id="location"></p>
+		  <p id="comment"></p>
+		  <button id="nextComment">Next</button>
+		</div>
+
+		<script>
+
+
+		  // TitleCase function from http://stackoverflow.com/questions/32589197/capitalize-first-letter-of-each-word-in-a-string-javascript
+		  function titleCase(str) {
+		    var splitStr = str.toLowerCase().split(' ');
+		    for (var i = 0; i < splitStr.length; i++) {
+		       // You do not need to check if i is larger than splitStr length, as your for does that for you
+		       // Assign it back to the array
+		       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+		   }
+		   // Directly return the joined string
+		   return splitStr.join(' ');
+		}
+
+		</script>
+
+		<!-- Change year/navbar code -->
+		<script>
+		var year = 2002; //Sets the default year of display to 2002
+		var csv = "UFO_" + year + ".csv";
+		loadMap();
+
+		d3.selectAll(".navButton").on("click", function () {
+			year = String(this.id).slice(4);
+			csv = "UFO_" + year + ".csv";
+			d3.selectAll(".AEDpoint").remove();
+			loadMap();
+			// Refreshes comments to new random based on correct year
+			d3.select("#reports").selectAll("p").text("");
+		})
+
+		</script>
+	</div>
+</body>
+</html>

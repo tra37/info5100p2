@@ -31,6 +31,7 @@ li {
   $("nav").append(list);
 
   function clickNav() {
+    console.log(this);
   }
   var liElements = d3.selectAll("li");
   liElements.on("click", function() {

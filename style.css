@@ -1,0 +1,22 @@
+.span {
+  margin-left: 10%;
+  margin-right: 10%;
+  min-width: 750px;
+}
+
+path {
+  stroke-linejoin: round;
+}
+
+.polygons {
+  fill: none;
+  stroke: #273142;
+  stroke-width: 0.5px;
+  stroke-opacity: 0.45;
+}
+
+#map{
+    position: block;
+    width: 100%;
+    height: 450px;
+}
