@@ -71,8 +71,6 @@
 							// link to geojson data for choropleth layer
  							L.geoJson(statesData, {style: style}).addTo(map);
 							map.on("viewreset moveend", update);
-							console.log(map);
-
 
 							// quantize levels of alcohol consumption into a diverging sequence of colors
 							function getColor(d) {
