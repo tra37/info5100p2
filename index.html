@@ -61,10 +61,18 @@
 						d3.csv("alcohol.csv", function(alcoholData) {
 							var temp = alcoholData;
 
-							// link to geojson data for choropleth layer
-							L.geoJson(statesData, {style: style}).addTo(map);
+							// Removes all layers, except map background
+							map.eachLayer(function (layer) {
+								if(layer._url != "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"){
+									map.removeLayer(layer);
+								}
+							});
 
+							// link to geojson data for choropleth layer
+ 							L.geoJson(statesData, {style: style}).addTo(map);
 							map.on("viewreset moveend", update);
+							console.log(map);
+
 
 							// quantize levels of alcohol consumption into a diverging sequence of colors
 							function getColor(d) {
