@@ -32,18 +32,6 @@
 	}
 
   div.tooltip {
-      /*position: absolute;
-      text-align: left;
-      width: 100px;
-      height: 40px;
-      padding: 2px;
-      font: 12px monospace;
-      background: black;
-      color: white;
-      border: 0px;
-      border-radius: 2px;
-      pointer-events: none;*/
-
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
       border-bottom-right-radius: 2px;
@@ -106,31 +94,31 @@ d3.csv(file, function(data) {
 			attribution: '&copy; ' + mapLink + ' Contributors',
 	}).addTo(map);
 
-	// //link to geojson data for choropleth layer
-	// L.geoJson(statesData, {style: style}).addTo(map);
-  //
-	// // quantize levels of alcohol consumption into a diverging sequence of colors
-	// function getColor(d) {
-	// 	return d > 70  ? '#BD0026' :
-	// 		   d > 60  ? '#E31A1C' :
-	// 		   d > 50  ? '#FC4E2A' :
-	// 		   d > 40   ? '#FD8D3C' :
-	// 		   d > 30   ? '#FEB24C' :
-	// 		   d > 20   ? '#FED976' :
-	// 					  '#FFEDA0'; //20 is the lightest color
-	// }
-  //
-	//
-	// function style(feature) {
-	// 	return {
-	// 		fillColor: getColor(feature.properties.density),
-	// 		weight: 1,
-	// 		opacity: 0.4,
-	// 		color: 'grey',
-	// 		dashArray: '1',
-	// 		fillOpacity: 0.3
-	// 	};
-	// }
+	//link to geojson data for choropleth layer
+	L.geoJson(statesData, {style: style}).addTo(map);
+
+	// quantize levels of alcohol consumption into a diverging sequence of colors
+	function getColor(d) {
+		return d > 70  ? '#BD0026' :
+			   d > 60  ? '#E31A1C' :
+			   d > 50  ? '#FC4E2A' :
+			   d > 40   ? '#FD8D3C' :
+			   d > 30   ? '#FEB24C' :
+			   d > 20   ? '#FED976' :
+						  '#FFEDA0'; //20 is the lightest color
+	}
+
+
+	function style(feature) {
+		return {
+			fillColor: getColor(feature.properties.density),
+			weight: 1,
+			opacity: 0.4,
+			color: 'grey',
+			dashArray: '1',
+			fillOpacity: 0.3
+		};
+	}
 
 	/* We simply pick up the SVG from the map object */
 	map._initPathRoot();
@@ -171,13 +159,11 @@ d3.csv(file, function(data) {
 		.attr("class", "AEDpoint")
 		.style("opacity", 0.8)
 		.style("fill", "#09875f")
-    // .style("stroke", "black")
 		.attr("r", 7);
 
     // add tooltips
     feature.on("mouseover", function(d){
-      div.transition().duration(200)
-      .style("opacity", 0.9);
+      div.style("opacity", 0.9);
 
       div.html(d.city + ", " + d.state + "<br/>" + d.shape + "-shaped object")
       .style("left", (d3.event.pageX) + "px")
@@ -188,7 +174,7 @@ d3.csv(file, function(data) {
       .style("fill", "darkblue");
     })
     .on("mouseout", function() {
-      div.transition().duration(1200)
+      div.transition().duration(2000)
       .style("opacity", 0);
 
       // remove dark highlights
