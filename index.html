@@ -32,6 +32,11 @@
 		<!--- Map Code -->
 		<div id="map">
 			<script>
+				// set up div for tooltip
+				var div = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
 				// instantiate map object to div #map
 				var map = new L.map("map", {
 					minZoom: 4,
@@ -96,11 +101,6 @@
 						var svg = d3.select("#map").select("svg"),
 						g = svg.append("g").attr('class', 'leaflet-zoom-hide');
 
-						// /* Initialize voronoi generator */
-						// var voronoi = d3.voronoi()
-						// .x(function(d) { return d.x; })
-						// .y(function(d) { return d.y; });
-
 						update();
 
 						function update() {
@@ -124,8 +124,6 @@
 							.attr("class", "AEDpoint")
 							.style("opacity", 0.8)
 							.style("fill", "#09875f")
-							//.attr("r", 150)
-							//.transition().duration(1200)
 							.attr("r", 5);
 
 							feature.attr("transform",
@@ -136,22 +134,28 @@
 								}
 							);
 
-							// //polygons
-							// var polygons = voronoi(positions).polygons();
-							//
-							//
-							// svg.selectAll(".polygons").remove();
-							//
-							// svg.append("g")
-							// .attr("class", "polygons")
-							// .selectAll("path")
-							// .data(polygons).enter()
-							// .append("path")
-							// .call(redrawPolygon);
-							//
-							// function redrawPolygon(polygon) {
-							// 	polygon.attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
-							// }
+							// add tooltips
+					    feature.on("mouseover", function(d){
+					      div.transition().duration(200)
+					      .style("opacity", 0.9);
+
+					      div.html(d.city + ", " + d.state + "<br/>" + d.shape + "-shaped object")
+					      .style("left", (d3.event.pageX) + "px")
+					      .style("top", (d3.event.pageY) + "px");
+
+					      // accentuate mouseover-ed circle
+					      d3.select(this).style("stroke-width", "2px")
+					      .style("fill", "darkblue");
+					    })
+					    .on("mouseout", function() {
+					      div.transition().duration(1200)
+					      .style("opacity", 0);
+
+					      // remove dark highlights
+					      d3.select(this).style("stroke-width", "0.5px")
+					      .style("fill", "#09875f");
+					    });
+
 						}
 						function getCommentNo(){
 							var min = 0;
