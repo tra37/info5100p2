@@ -50,7 +50,10 @@
 
 				function loadMap() {
 					d3.csv(csv, function(data) {
-						console.log(csv);
+						var temp; //temp to store alcohol data
+
+						d3.csv("alcohol.csv", function(alcoholData) {
+							temp = alcoholData;
 
 						// link to geojson data for choropleth layer
 						L.geoJson(statesData, {style: style}).addTo(map);
@@ -68,10 +71,18 @@
 											  '#FFEDA0'; //20 is the lightest color
 						}
 
-						//TODO: currently style reflects population density not alcohol level
 						function style(feature) {
+							var gateway = false;
+							var i = 0;
+							while(gateway == false){
+								if(String(feature.properties.name).trim() == String(temp[i].State).trim()){
+									var stateColor = getColor(temp[i][year]);
+									gateway = true;
+								}
+								i++;
+							}
 							return {
-								fillColor: getColor(feature.properties.density),
+								fillColor: stateColor,
 								weight: 1,
 								opacity: 0.4,
 								color: 'grey',
@@ -180,7 +191,8 @@
 						})
 
 					});
-				}
+				});
+			}
 			</script>
 		</div>
 
@@ -207,6 +219,7 @@
 		   // Directly return the joined string
 		   return splitStr.join(' ');
 		}
+
 
 		</script>
 
